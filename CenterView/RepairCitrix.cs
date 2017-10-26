@@ -1,4 +1,5 @@
-﻿using System;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,8 +20,10 @@ namespace CenterView
         /// </param>
         public void CitrixRep(string url)
         {
+            XMLconfigReader xMLconfigReader = new XMLconfigReader();
             if(url == null ||　url == String.Empty)
-                url = "https://downloadplugins.citrix.com/Windows/CitrixReceiver.exe";
+                url = xMLconfigReader.CitrixUrl;//读取配置文件里的下载链接
+                //url = "https://downloadplugins.citrix.com/Windows/CitrixReceiver.exe";
             //判断Citrix是否已经安装
             bool isExisted = CkCitrix.CheckCitrix();
             if (!isExisted)
@@ -34,12 +37,19 @@ namespace CenterView
                 }
                 else
                 {
-                    MessageBox.Show("即将开始下载，请耐心等待");
-                    bool flag = Download(url, fullPath);
-                    if (flag)
+                    try
                     {
-                        MessageBox.Show("下载完成，即将开始安装");
-                        System.Diagnostics.Process.Start(fullPath);
+                        MessageBox.Show("即将开始下载，请耐心等待");
+                        bool flag = Download(url, fullPath);
+                        if (flag)
+                        {
+                            MessageBox.Show("下载完成，即将开始安装");
+                            System.Diagnostics.Process.Start(fullPath);
+                        }
+                    }
+                    catch
+                    {
+                        MessageBox.Show("下载失败，请手动下载插件");
                     }
                 }
             }
